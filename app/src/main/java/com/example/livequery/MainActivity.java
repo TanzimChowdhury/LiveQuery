@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             Toast.makeText(this, "Connection Established", Toast.LENGTH_SHORT).show();
-            parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient(new URI("wss://test450.b4a.io/"));
+            parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient(new URI("wss://"));
         } catch (URISyntaxException e) {
             Toast.makeText(this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
         }
@@ -64,6 +64,21 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
             });
+
+            //This will be triggered when a new object is created
+            subscriptionHandling.handleEvent(SubscriptionHandling.Event.DELETE, (query, object) -> {
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(() -> {
+                    TextView pokeText = findViewById(R.id.pokeText);
+                    numPokes--;
+                    if(numPokes == 1) {
+                        pokeText.setText("Poked " + numPokes + " time");
+                    }
+                    else {
+                        pokeText.setText("Poked " + numPokes + " times");
+                    }
+                });
+            });
         }
 
     }
@@ -73,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
     }
 
-    public void createMessage(View view) {
+    public void makePoke(View view) {
         //Creating new object for Message Class
         ParseObject entity = new ParseObject("Message");
 
@@ -90,5 +105,24 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public void deletePoke(View view) {
+        //Fetching object form Message Class
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Message");
+
+        query.whereEqualTo("destination", "pokelist");
+
+        // Saves the new object.
+        // Notice that the SaveCallback is totally optional!
+        query.getFirstInBackground((object, e) ->{
+            if(e==null){
+                //This is delete the object and trigger the delete event in live query
+                object.deleteInBackground();
+            }else{
+                //Something went wrong
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

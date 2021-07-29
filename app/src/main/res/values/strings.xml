@@ -4,6 +4,6 @@
     <string name="back4app_server_url">https://parseapi.back4app.com/</string>
 
     <!-- Change the following strings as required -->
-    <string name="back4app_app_id">BQtKck9QDkwq06DQVd1U8PDexs6dSIn4oHGFeezr</string>
-    <string name="back4app_client_key">eR7tKzODAujZJZ4l15lPjSPOBTnpQzLnFXfKrnoC</string>
+    <string name="back4app_app_id"> </string>
+    <string name="back4app_client_key"> </string>
 </resources>
